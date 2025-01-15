@@ -1,0 +1,512 @@
+:root {
+    --main-bg-color: #f8f9fa;
+    --hover-bg-color: rgba(0, 0, 0, 0.05);
+    --focus-bg-color: rgba(66, 153, 225, 0.1);
+    --focus-shadow-color: rgba(66, 153, 225, 0.4);
+    --folder-content-bg: #ffffff;
+    --folder-content-border: #e2e8f0;
+    --folder-item-hover-bg: #f8f9fa;
+    --text-color: #2d3748;
+    --btn-bg-color: #4299e1;
+    --btn-hover-bg-color: #3182ce;
+    --modal-bg-color: #ffffff;
+    --input-bg-color: #f8f9fa;
+    --input-border-color: #e2e8f0;
+    --context-menu-bg: #ffffff;
+    --context-menu-hover-bg: #f8f9fa;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+.header {
+    width: 100%;
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    background-color: var(--main-bg-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 10px;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.bookmark-bar {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--btn-bg-color) var(--main-bg-color);
+    white-space: nowrap;
+    height: 40px;
+    min-height: 40px;
+    max-height: 40px;
+}
+
+.bookmark-bar::-webkit-scrollbar {
+    height: 6px;
+}
+
+.bookmark-bar::-webkit-scrollbar-track {
+    background: var(--main-bg-color);
+}
+
+.bookmark-bar::-webkit-scrollbar-thumb {
+    background-color: var(--btn-bg-color);
+    border-radius: 3px;
+}
+
+.bookmark-item,
+.folder-item {
+    display: inline-flex;
+    align-items: center;
+    height: 28px;
+    padding: 0 8px;
+    margin: 0 2px;
+    border-radius: 4px;
+    font-size: 13px;
+    transition: all 0.2s ease;
+    cursor: grab;
+    user-select: none;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: var(--modal-bg-color);
+    margin: 10% auto;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    max-width: calc(100vw - 48px);
+    position: relative;
+    box-sizing: border-box;
+}
+
+.modal-content h2 {
+    margin: 0 0 20px 0;
+    color: var(--text-color);
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.modal-content input {
+    width: 100%;
+    box-sizing: border-box;
+    height: 40px;
+    padding: 0 12px;
+    margin: 8px 0;
+    border: 1px solid var(--input-border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.modal-content input:focus {
+    border-color: var(--btn-bg-color);
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+    outline: none;
+}
+
+.modal-content button {
+    width: 100%;
+    height: 40px;
+    margin-top: 16px;
+    background-color: var(--btn-bg-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-content button:hover {
+    background-color: var(--btn-hover-bg-color);
+    transform: translateY(-1px);
+}
+
+.close {
+    position: absolute;
+    right: 16px;
+    top: 16px;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.close:hover {
+    color: #000;
+    transform: rotate(90deg);
+}
+
+.bookmark-item:hover,
+.folder-item:hover {
+    background-color: var(--hover-bg-color);
+}
+
+.bookmark-item img,
+.folder-item svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    flex-shrink: 0;
+}
+
+.folder-item {
+    position: relative;
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+.folder-focused {
+    background-color: var(--focus-bg-color);
+    box-shadow: 0 0 0 2px var(--focus-shadow-color);
+}
+
+.folder-content {
+    position: fixed;
+    background-color: var(--folder-content-bg);
+    border: 1px solid var(--folder-content-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 6px 0;
+    min-width: 200px;
+    animation: folderFadeIn 0.15s ease;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.folder-content.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+@keyframes folderFadeIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(4px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+.folder-item-content {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.folder-item-content:hover {
+    background-color: var(--folder-item-hover-bg);
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.auth-btn {
+    background-color: var(--btn-bg-color);
+    color: var(--text-color);
+    border: none;
+    padding: 5px 10px;
+    margin-left: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.auth-btn:hover {
+    background-color: var(--btn-hover-bg-color);
+}
+
+.context-menu {
+    display: none;
+    position: fixed;
+    background-color: var(--context-menu-bg);
+    border: 1px solid var(--folder-content-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    min-width: 150px;
+    padding: 6px 0;
+}
+
+.context-menu-item {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 14px;
+    color: var(--text-color);
+    white-space: nowrap;
+}
+
+.context-menu-item:hover {
+    background-color: var(--context-menu-hover-bg);
+}
+
+.context-menu-item:active {
+    background-color: var(--focus-bg-color);
+}
+
+.drag-over {
+    position: relative;
+}
+
+.drag-over::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 123, 255, 0.2);
+    border: 2px dashed #007bff;
+    pointer-events: none;
+}
+
+.error-message {
+    color: red;
+    margin-top: 10px;
+}
+
+.dragging {
+    opacity: 0.6;
+    cursor: grabbing;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    background: var(--hover-bg-color);
+    transform: scale(1.02);
+}
+
+/* 添加其他模态框和上下文... */
+
+@keyframes toastIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes toastOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
+
+.drag-indicator {
+    position: absolute;
+    width: 3px;
+    background-color: var(--btn-bg-color);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    z-index: 1000;
+    border-radius: 1.5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.drag-indicator::before {
+    content: '';
+    position: absolute;
+    left: -3.5px;
+    top: -7px;
+    width: 10px;
+    height: 10px;
+    background-color: var(--btn-bg-color);
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.folder-highlight {
+    background-color: var(--focus-bg-color) !important;
+    box-shadow: 0 0 0 2px var(--btn-bg-color);
+    transition: all 0.2s ease;
+}
+
+.folder-drop-indicator {
+    position: absolute;
+    inset: 0;
+    border: 2px dashed var(--btn-bg-color);
+    border-radius: 4px;
+    pointer-events: none;
+    animation: pulse 1.5s infinite;
+    background-color: rgba(66, 153, 225, 0.1);
+}
+
+.drag-over-left::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--btn-bg-color);
+    opacity: 0.5;
+}
+
+.drag-over-right::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: var(--btn-bg-color);
+    opacity: 0.5;
+}
+
+.drag-over-top::before {
+    content: '↑';
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #409eff;
+}
+
+.drag-over-bottom::after {
+    content: '↓';
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #409eff;
+}
+
+.folder-content .folder-item {
+    margin: 2px 0;
+    border-radius: 0;
+    padding: 6px 16px;
+}
+
+.import-export-section {
+    display: flex;
+    gap: 8px;
+    margin-right: 10px;
+}
+
+.import-export-section .auth-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: var(--btn-bg-color);
+    color: white;
+}
+
+.import-export-section .auth-btn:hover {
+    background-color: var(--btn-hover-bg-color);
+}
+
+.import-export-section {
+    display: flex;
+    gap: 8px;
+    margin-right: 10px;
+}
+
+.folder-like-container {
+    position: relative;
+}
+
+.folder-content {
+    position: fixed;
+    background-color: var(--folder-content-bg);
+    border: 1px solid var(--folder-content-border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    padding: 6px 0;
+    min-width: 150px;
+}
+
+.folder-item-content {
+    padding: 8px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s;
+}
+
+.folder-item-content:hover {
+    background-color: var(--folder-item-hover-bg);
+}
+
+.auth-btn {
+    padding: 5px 10px;
+    font-size: 12px;
+    background-color: var(--btn-bg-color);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.auth-btn:hover {
+    background-color: var(--btn-hover-bg-color);
+}
+
+.auth-btn.active {
+    background-color: var(--focus-bg-color);
+    box-shadow: 0 0 0 2px var(--focus-shadow-color);
+}
+
+.modal-options {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.modal-option {
+    padding: 16px;
+    border: 1px solid var(--folder-content-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-option:hover {
+    background-color: var(--hover-bg-color);
+    border-color: var(--btn-bg-color);
+}
+
+.modal-option h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+.modal-option p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.modal-option.selected {
+    background-color: var(--focus-bg-color);
+    border-color: var(--btn-bg-color);
+}
