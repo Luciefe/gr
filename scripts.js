@@ -1,392 +1,76 @@
 // 全局变量
-const bcrypt = require('bcrypt');
-const { v4: uuidv4 } = require('uuid');
-
 let currentUser = null;
 let users = [
-    {
-        id: uuidv4(),
-        username: 'demo',
-        password: bcrypt.hashSync('password', 10),
-        role: 'user',
-        created_at: new Date(),
-        last_login: null
-    }
+    { username: 'demo', password: 'password' }
 ];
 
 let bookmarks = [
     {
-        id: uuidv4(),
+        id: 1,
         type: 'folder',
         name: '常用网站',
-        description: '常用网站收藏夹',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: users[0].id,
-        tags: ['常用', '收藏'],
-        access: 'private',
-        visit_count: 0,
         items: [
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '百度',
-                url: 'https://www.baidu.com',
-                icon: 'https://www.baidu.com/favicon.ico',
-                description: '中国最大的搜索引擎',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['搜索引擎'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '淘宝',
-                url: 'https://www.taobao.com',
-                icon: 'https://www.taobao.com/favicon.ico',
-                description: '中国最大的购物网站',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['购物'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '京东',
-                url: 'https://www.jd.com',
-                icon: 'https://www.jd.com/favicon.ico',
-                description: '中国领先的电商平台',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['电商'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '哔哩哔哩',
-                url: 'https://www.bilibili.com',
-                icon: 'https://www.bilibili.com/favicon.ico',
-                description: '中国最大的二次元社区',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['视频', '二次元'],
-                visit_count: 0
-            }
+            { id: 2, type: 'bookmark', name: '百度', url: 'https://www.baidu.com', icon: 'https://www.baidu.com/favicon.ico' },
+            { id: 3, type: 'bookmark', name: '淘宝', url: 'https://www.taobao.com', icon: 'https://www.taobao.com/favicon.ico' },
+            { id: 4, type: 'bookmark', name: '京东', url: 'https://www.jd.com', icon: 'https://www.jd.com/favicon.ico' },
+            { id: 5, type: 'bookmark', name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'https://www.bilibili.com/favicon.ico' }
         ]
     },
     {
-        id: uuidv4(),
+        id: 6,
         type: 'folder',
         name: '新闻资讯',
-        description: '新闻资讯收藏夹',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: users[0].id,
-        tags: ['新闻', '资讯'],
-        access: 'private',
-        visit_count: 0,
         items: [
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '腾讯新闻',
-                url: 'https://news.qq.com',
-                icon: 'https://news.qq.com/favicon.ico',
-                description: '腾讯新闻',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['新闻'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '新浪新闻',
-                url: 'https://news.sina.com.cn',
-                icon: 'https://news.sina.com.cn/favicon.ico',
-                description: '新浪新闻',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['新闻'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '网易新闻',
-                url: 'https://news.163.com',
-                icon: 'https://news.163.com/favicon.ico',
-                description: '网易新闻',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['新闻'],
-                visit_count: 0
-            }
+            { id: 7, type: 'bookmark', name: '腾讯新闻', url: 'https://news.qq.com', icon: 'https://news.qq.com/favicon.ico' },
+            { id: 8, type: 'bookmark', name: '新浪新闻', url: 'https://news.sina.com.cn', icon: 'https://news.sina.com.cn/favicon.ico' },
+            { id: 9, type: 'bookmark', name: '网易新闻', url: 'https://news.163.com', icon: 'https://news.163.com/favicon.ico' }
         ]
     },
     {
-        id: uuidv4(),
+        id: 10,
         type: 'folder',
         name: '视频娱乐',
-        description: '视频娱乐收藏夹',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: users[0].id,
-        tags: ['视频', '娱乐'],
-        access: 'private',
-        visit_count: 0,
         items: [
+            { id: 11, type: 'bookmark', name: '优酷', url: 'https://www.youku.com', icon: 'https://www.youku.com/favicon.ico' },
+            { id: 12, type: 'bookmark', name: '腾讯视频', url: 'https://v.qq.com', icon: 'https://v.qq.com/favicon.ico' },
+            { id: 13, type: 'bookmark', name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'https://www.iqiyi.com/favicon.ico' },
             {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '优酷',
-                url: 'https://www.youku.com',
-                icon: 'https://www.youku.com/favicon.ico',
-                description: '优酷视频',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['视频'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '腾讯视频',
-                url: 'https://v.qq.com',
-                icon: 'https://v.qq.com/favicon.ico',
-                description: '腾讯视频',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['视频'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '爱奇艺',
-                url: 'https://www.iqiyi.com',
-                icon: 'https://www.iqiyi.com/favicon.ico',
-                description: '爱奇艺视频',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['视频'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
+                id: 14,
                 type: 'folder',
                 name: '直播平台',
-                description: '直播平台收藏夹',
-                created_at: new Date(),
-                updated_at: new Date(),
-                created_by: users[0].id,
-                tags: ['直播'],
-                access: 'private',
-                visit_count: 0,
                 items: [
-                    {
-                        id: uuidv4(),
-                        type: 'bookmark',
-                        name: '斗鱼',
-                        url: 'https://www.douyu.com',
-                        icon: 'https://www.douyu.com/favicon.ico',
-                        description: '斗鱼直播',
-                        created_at: new Date(),
-                        updated_at: new Date(),
-                        tags: ['直播'],
-                        visit_count: 0
-                    },
-                    {
-                        id: uuidv4(),
-                        type: 'bookmark',
-                        name: '虎牙',
-                        url: 'https://www.huya.com',
-                        icon: 'https://www.huya.com/favicon.ico',
-                        description: '虎牙直播',
-                        created_at: new Date(),
-                        updated_at: new Date(),
-                        tags: ['直播'],
-                        visit_count: 0
-                    },
-                    {
-                        id: uuidv4(),
-                        type: 'bookmark',
-                        name: '抖音直播',
-                        url: 'https://live.douyin.com',
-                        icon: 'https://live.douyin.com/favicon.ico',
-                        description: '抖音直播',
-                        created_at: new Date(),
-                        updated_at: new Date(),
-                        tags: ['直播'],
-                        visit_count: 0
-                    }
+                    { id: 15, type: 'bookmark', name: '斗鱼', url: 'https://www.douyu.com', icon: 'https://www.douyu.com/favicon.ico' },
+                    { id: 16, type: 'bookmark', name: '虎牙', url: 'https://www.huya.com', icon: 'https://www.huya.com/favicon.ico' },
+                    { id: 17, type: 'bookmark', name: '抖音直播', url: 'https://live.douyin.com', icon: 'https://live.douyin.com/favicon.ico' }
                 ]
             }
         ]
     },
     {
-        id: uuidv4(),
+        id: 18,
         type: 'folder',
         name: '工具网站',
-        description: '工具网站收藏夹',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: users[0].id,
-        tags: ['工具'],
-        access: 'private',
-        visit_count: 0,
         items: [
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '有道翻译',
-                url: 'https://fanyi.youdao.com',
-                icon: 'https://fanyi.youdao.com/favicon.ico',
-                description: '有道翻译',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['翻译'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '百度地图',
-                url: 'https://map.baidu.com',
-                icon: 'https://map.baidu.com/favicon.ico',
-                description: '百度地图',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['地图'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '12306',
-                url: 'https://www.12306.cn',
-                icon: 'https://www.12306.cn/favicon.ico',
-                description: '12306',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['火车票'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '天气预报',
-                url: 'https://tianqi.qq.com',
-                icon: 'https://tianqi.qq.com/favicon.ico',
-                description: '天气预报',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['天气'],
-                visit_count: 0
-            }
+            { id: 19, type: 'bookmark', name: '有道翻译', url: 'https://fanyi.youdao.com', icon: 'https://fanyi.youdao.com/favicon.ico' },
+            { id: 20, type: 'bookmark', name: '百度地图', url: 'https://map.baidu.com', icon: 'https://map.baidu.com/favicon.ico' },
+            { id: 21, type: 'bookmark', name: '12306', url: 'https://www.12306.cn', icon: 'https://www.12306.cn/favicon.ico' },
+            { id: 22, type: 'bookmark', name: '天气预报', url: 'https://tianqi.qq.com', icon: 'https://tianqi.qq.com/favicon.ico' }
         ]
     },
     {
-        id: uuidv4(),
+        id: 23,
         type: 'folder',
         name: '学习资源',
-        description: '学习资源收藏夹',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: users[0].id,
-        tags: ['学习'],
-        access: 'private',
-        visit_count: 0,
         items: [
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '中国大学MOOC',
-                url: 'https://www.icourse163.org',
-                icon: 'https://www.icourse163.org/favicon.ico',
-                description: '中国大学MOOC',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['学习'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '菜鸟教程',
-                url: 'https://www.runoob.com',
-                icon: 'https://www.runoob.com/favicon.ico',
-                description: '菜鸟教程',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['教程'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: 'CSDN',
-                url: 'https://www.csdn.net',
-                icon: 'https://www.csdn.net/favicon.ico',
-                description: 'CSDN',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['编程'],
-                visit_count: 0
-            },
-            {
-                id: uuidv4(),
-                type: 'bookmark',
-                name: '掘金',
-                url: 'https://juejin.cn',
-                icon: 'https://juejin.cn/favicon.ico',
-                description: '掘金',
-                created_at: new Date(),
-                updated_at: new Date(),
-                tags: ['编程'],
-                visit_count: 0
-            }
+            { id: 24, type: 'bookmark', name: '中国大学MOOC', url: 'https://www.icourse163.org', icon: 'https://www.icourse163.org/favicon.ico' },
+            { id: 25, type: 'bookmark', name: '菜鸟教程', url: 'https://www.runoob.com', icon: 'https://www.runoob.com/favicon.ico' },
+            { id: 26, type: 'bookmark', name: 'CSDN', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' },
+            { id: 27, type: 'bookmark', name: '掘金', url: 'https://juejin.cn', icon: 'https://juejin.cn/favicon.ico' }
         ]
     },
-    {
-        id: uuidv4(),
-        type: 'bookmark',
-        name: '知乎',
-        url: 'https://www.zhihu.com',
-        icon: 'https://www.zhihu.com/favicon.ico',
-        description: '知乎',
-        created_at: new Date(),
-        updated_at: new Date(),
-        tags: ['问答'],
-        visit_count: 0
-    },
-    {
-        id: uuidv4(),
-        type: 'bookmark',
-        name: '微博',
-        url: 'https://weibo.com',
-        icon: 'https://weibo.com/favicon.ico',
-        description: '微博',
-        created_at: new Date(),
-        updated_at: new Date(),
-        tags: ['社交'],
-        visit_count: 0
-    },
-    {
-        id: uuidv4(),
-        type: 'bookmark',
-        name: '豆瓣',
-        url: 'https://www.douban.com',
-        icon: 'https://www.douban.com/favicon.ico',
-        description: '豆瓣',
-        created_at: new Date(),
-        updated_at: new Date(),
-        tags: ['社交'],
-        visit_count: 0
-    }
+    { id: 28, type: 'bookmark', name: '知乎', url: 'https://www.zhihu.com', icon: 'https://www.zhihu.com/favicon.ico' },
+    { id: 29, type: 'bookmark', name: '微博', url: 'https://weibo.com', icon: 'https://weibo.com/favicon.ico' },
+    { id: 30, type: 'bookmark', name: '豆瓣', url: 'https://www.douban.com', icon: 'https://www.douban.com/favicon.ico' }
 ];
 
 let currentFocusedFolder = null;
@@ -490,7 +174,7 @@ async function handleAuthSubmit(event) {
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         if (type === 'login') {
-            const user = users.find(u => u.username === username && bcrypt.compareSync(password, u.password));
+            const user = users.find(u => u.username === username && u.password === password);
             if (user) {
                 currentUser = { username };
                 updateUserSection();
@@ -503,7 +187,7 @@ async function handleAuthSubmit(event) {
             if (users.some(u => u.username === username)) {
                 throw new Error('用户名已存在');
             }
-            users.push({ id: uuidv4(), username, password: bcrypt.hashSync(password, 10), role: 'user', created_at: new Date(), last_login: null });
+            users.push({ username, password });
             currentUser = { username };
             updateUserSection();
             document.getElementById('authModal').style.display = 'none';
@@ -586,10 +270,7 @@ function renderBookmarkItem(item, container) {
     `;
     
     initDragListeners(bookmarkElem, item);
-    bookmarkElem.onclick = () => {
-        window.open(item.url, '_blank');
-        incrementVisitCount(item.id);
-    };
+    bookmarkElem.onclick = () => window.open(item.url, '_blank');
     bookmarkElem.addEventListener('contextmenu', (e) => showContextMenu(e, item));
     
     container.appendChild(bookmarkElem);
@@ -1183,16 +864,11 @@ function addBookmark(name, url, parentFolder = null) {
         validateBookmark(name, url);
         
         const newBookmark = {
-            id: uuidv4(),
+            id: Date.now(),
             type: 'bookmark',
             name: name.trim(),
             url: url,
-            icon: getFaviconUrl(url),
-            description: '',
-            created_at: new Date(),
-            updated_at: new Date(),
-            tags: [],
-            visit_count: 0
+            icon: getFaviconUrl(url)
         };
         
         if (isDuplicateBookmark(newBookmark)) {
@@ -1218,16 +894,9 @@ function addBookmark(name, url, parentFolder = null) {
 // 添加文件夹函数
 function addFolder(name, parentFolder = null) {
     const newFolder = {
-        id: uuidv4(),
+        id: Date.now(),
         type: 'folder',
         name: name,
-        description: '',
-        created_at: new Date(),
-        updated_at: new Date(),
-        created_by: currentUser ? currentUser.id : null,
-        tags: [],
-        access: 'private',
-        visit_count: 0,
         items: []
     };
     if (parentFolder) {
@@ -2278,10 +1947,7 @@ function createBookmarkElement(bookmark) {
     `;
     
     initDragListeners(bookmarkElem, bookmark);
-    bookmarkElem.onclick = () => {
-        window.open(bookmark.url, '_blank');
-        incrementVisitCount(bookmark.id);
-    };
+    bookmarkElem.onclick = () => window.open(bookmark.url, '_blank');
     bookmarkElem.addEventListener('contextmenu', (e) => showContextMenu(e, bookmark));
     
     return bookmarkElem;
@@ -2312,50 +1978,4 @@ function initializeContextMenu() {
             hideContextMenu();
         }
     });
-}
-
-// 书签搜索功能
-function searchBookmarks(query, user_id) {
-    const results = [];
-    function searchInItems(items, parentPath = '') {
-        items.forEach(item => {
-            if (item.name.toLowerCase().includes(query.toLowerCase()) ||
-                (item.description && item.description.toLowerCase().includes(query.toLowerCase())) ||
-                (item.tags && item.tags.join(' ').toLowerCase().includes(query.toLowerCase()))) {
-                results.push({...item, path: parentPath + '/' + item.name});
-            }
-            if (item.type === 'folder' && item.items) {
-                searchInItems(item.items, parentPath + '/' + item.name);
-            }
-        });
-    }
-    searchInItems(bookmarks);
-    return results;
-}
-
-// 书签导出功能
-function exportBookmarks(user_id, format = 'json') {
-    const userBookmarks = bookmarks.filter(b => b.created_by === user_id);
-    if (format === 'json') {
-        return JSON.stringify(userBookmarks, null, 2);
-    }
-    // 可以添加其他格式的导出支持
-}
-
-// 书签访问统计
-function incrementVisitCount(bookmark_id) {
-    function updateCount(items) {
-        for (let item of items) {
-            if (item.id === bookmark_id) {
-                item.visit_count = (item.visit_count || 0) + 1;
-                item.last_visited = new Date();
-                return true;
-            }
-            if (item.type === 'folder' && item.items) {
-                if (updateCount(item.items)) return true;
-            }
-        }
-        return false;
-    }
-    updateCount(bookmarks);
 }
