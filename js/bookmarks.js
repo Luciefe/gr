@@ -49,7 +49,7 @@ let bookmarks = [
         name: '学习资源',
         items: [
             { id: 25, type: 'bookmark', name: '菜鸟教程', url: 'https://www.runoob.com', icon: 'https://www.runoob.com/favicon.ico' },
-            { id: 26, type: 'bookmark', name: 'CSDN', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' }
+            { id: 26, type: 'bookmark', name: 'CSDN1', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' }
         ]
     }
 ];
