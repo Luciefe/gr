@@ -5,7 +5,6 @@ import { getContextMenuTarget, setContextMenuTarget } from './state.js';
 import { logout } from './auth.js';
 import { showToast } from './utils.js';
 
-
 // 初始化
 loadBookmarks();
 renderBookmarks();
@@ -21,64 +20,56 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
     updateUserSection();
 });
 
-document.getElementById('addBookmarkForm').addEventListener('submit', (e) => {
+// 删除重复的表单提交事件处理程序
+document.getElementById('addBookmarkForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('bookmarkName').value;
     const url = document.getElementById('bookmarkUrl').value;
     const contextMenuTarget = getContextMenuTarget();
     
-    if (contextMenuTarget && contextMenuTarget.type === 'folder') {
-        addBookmark(name, url, contextMenuTarget);
-    } else {
-        addBookmark(name, url);
+    try {
+        if (contextMenuTarget && contextMenuTarget.type === 'folder') {
+            await addBookmark(name, url, contextMenuTarget);
+            showToast(`已添加到 "${contextMenuTarget.name}" 文件夹`);
+        } else {
+            await addBookmark(name, url);
+            showToast('已添加到根目录');
+        }
+        
+        document.getElementById('addBookmarkModal').style.display = 'none';
+        document.getElementById('addBookmarkForm').reset();
+        setContextMenuTarget(null); // 清除目标
+        debouncedRenderBookmarks();
+    } catch (error) {
+        showToast(error.message, 'error');
     }
-    
-    document.getElementById('addBookmarkModal').style.display = 'none';
-    document.getElementById('addBookmarkForm').reset();
-    debouncedRenderBookmarks();
 });
 
-document.getElementById('addFolderForm').addEventListener('submit', (e) => {
+document.getElementById('addFolderForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('folderName').value;
-    
-    if (contextMenuTarget && contextMenuTarget.type === 'folder') {
-        addFolder(name, contextMenuTarget);
-    } else {
-        addFolder(name);
-    }
-    
-    document.getElementById('addFolderModal').style.display = 'none';
-    document.getElementById('addFolderForm').reset();
-    debouncedRenderBookmarks();
-});
-
-document.getElementById('editItem').addEventListener('click', () => {
     const contextMenuTarget = getContextMenuTarget();
-    if (contextMenuTarget) {
-        editItem(contextMenuTarget, name, url);
-        document.getElementById('editModal').style.display = 'none';
+
+    try {
+        if (contextMenuTarget && contextMenuTarget.type === 'folder') {
+            await addFolder(name, contextMenuTarget);
+            showToast(`已添加到 "${contextMenuTarget.name}" 文件夹`);
+        } else {
+            await addFolder(name);
+            showToast('已添加到根目录');
+        }
+        
+        document.getElementById('addFolderModal').style.display = 'none';
+        document.getElementById('addFolderForm').reset();
+        setContextMenuTarget(null); // 清除目标
         debouncedRenderBookmarks();
+    } catch (error) {
+        showToast(error.message, 'error');
     }
-});
-
-document.getElementById('bookmarkBar').addEventListener('contextmenu', (e) => {
-    if (e.target === e.currentTarget) {
-        showContextMenu(e, null);
-    }
-});
-
-document.getElementById('addBookmark').addEventListener('click', () => {
-    document.getElementById('addBookmarkModal').style.display = 'block';
-    hideContextMenu();
-});
-
-document.getElementById('addFolder').addEventListener('click', () => {
-    document.getElementById('addFolderModal').style.display = 'block';
-    hideContextMenu();
 });
 
 document.getElementById('editItem').addEventListener('click', () => {
+    const contextMenuTarget = getContextMenuTarget(); // 修复未定义问题
     if (contextMenuTarget) {
         const editModal = document.getElementById('editModal');
         const editTitle = document.getElementById('editTitle');
@@ -99,9 +90,45 @@ document.getElementById('editItem').addEventListener('click', () => {
     }
 });
 
+// 修改编辑表单提交事件处理
+document.getElementById('editForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const contextMenuTarget = getContextMenuTarget();
+    if (!contextMenuTarget) return;
+
+    try {
+        const newName = document.getElementById('editName').value;
+        const newUrl = contextMenuTarget.type === 'bookmark' ? document.getElementById('editUrl').value : null;
+
+        editItem(contextMenuTarget, newName, newUrl);
+        saveBookmarks();
+        debouncedRenderBookmarks();
+        document.getElementById('editModal').style.display = 'none';
+        showToast(`${contextMenuTarget.type === 'folder' ? '文件夹' : '书签'}已更新`);
+    } catch (error) {
+        showToast(error.message, 'error');
+    }
+});
+
+document.getElementById('bookmarkBar').addEventListener('contextmenu', (e) => {
+    if (e.target === e.currentTarget) {
+        showContextMenu(e, null);
+    }
+});
+
+document.getElementById('addBookmark').addEventListener('click', () => {
+    document.getElementById('addBookmarkModal').style.display = 'block';
+    hideContextMenu();
+});
+
+document.getElementById('addFolder').addEventListener('click', () => {
+    document.getElementById('addFolderModal').style.display = 'block';
+    hideContextMenu();
+});
+
 document.getElementById('deleteItem').addEventListener('click', () => {
     const contextMenuTarget = getContextMenuTarget();
-    if (contextMenuTarget && confirm('确定要删除吗？')) {
+    if (contextMenuTarget) {
         deleteItem(contextMenuTarget);
         hideContextMenu();
         debouncedRenderBookmarks();
