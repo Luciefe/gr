@@ -26,3 +26,22 @@ export function getContextMenuTarget() {
 export function setContextMenuTarget(target) {
     _contextMenuTarget = target;
 }
+
+let isDragging = false;
+let lastDropTarget = null;
+
+export function setIsDragging(value) {
+    isDragging = value;
+}
+
+export function getIsDragging() {
+    return isDragging;
+}
+
+export function setLastDropTarget(target) {
+    lastDropTarget = target;
+}
+
+export function getLastDropTarget() {
+    return lastDropTarget;
+}
