@@ -1,5 +1,7 @@
+// 从 utils.js 文件中导入 showToast、getFaviconUrl 和 debounce 函数
 import { showToast, getFaviconUrl, debounce } from './utils.js';
 
+// 定义一个 bookmarks 数组，存储书签数据，包含多个文件夹和书签
 let bookmarks = [
     {
         id: 1,
@@ -29,17 +31,7 @@ let bookmarks = [
         items: [
             { id: 11, type: 'bookmark', name: '优酷', url: 'https://www.youku.com', icon: 'https://www.youku.com/favicon.ico' },
             { id: 12, type: 'bookmark', name: '腾讯视频', url: 'https://v.qq.com', icon: 'https://v.qq.com/favicon.ico' },
-            { id: 13, type: 'bookmark', name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'https://www.iqiyi.com/favicon.ico' },
-            {
-                id: 14,
-                type: 'folder',
-                name: '直播平台',
-                items: [
-                    { id: 15, type: 'bookmark', name: '斗鱼', url: 'https://www.douyu.com', icon: 'https://www.douyu.com/favicon.ico' },
-                    { id: 16, type: 'bookmark', name: '虎牙', url: 'https://www.huya.com', icon: 'https://www.huya.com/favicon.ico' },
-                    { id: 17, type: 'bookmark', name: '抖音直播', url: 'https://live.douyin.com', icon: 'https://live.douyin.com/favicon.ico' }
-                ]
-            }
+            { id: 13, type: 'bookmark', name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'https://www.iqiyi.com/favicon.ico' }
         ]
     },
     {
@@ -48,9 +40,7 @@ let bookmarks = [
         name: '工具网站',
         items: [
             { id: 19, type: 'bookmark', name: '有道翻译', url: 'https://fanyi.youdao.com', icon: 'https://fanyi.youdao.com/favicon.ico' },
-            { id: 20, type: 'bookmark', name: '百度地图', url: 'https://map.baidu.com', icon: 'https://map.baidu.com/favicon.ico' },
-            { id: 21, type: 'bookmark', name: '12306', url: 'https://www.12306.cn', icon: 'https://www.12306.cn/favicon.ico' },
-            { id: 22, type: 'bookmark', name: '天气预报', url: 'https://tianqi.qq.com', icon: 'https://tianqi.qq.com/favicon.ico' }
+            { id: 20, type: 'bookmark', name: '百度地图', url: 'https://map.baidu.com', icon: 'https://map.baidu.com/favicon.ico' }
         ]
     },
     {
@@ -58,25 +48,23 @@ let bookmarks = [
         type: 'folder',
         name: '学习资源',
         items: [
-            { id: 24, type: 'bookmark', name: '中国大学MOOC', url: 'https://www.icourse163.org', icon: 'https://www.icourse163.org/favicon.ico' },
             { id: 25, type: 'bookmark', name: '菜鸟教程', url: 'https://www.runoob.com', icon: 'https://www.runoob.com/favicon.ico' },
-            { id: 26, type: 'bookmark', name: 'CSDN', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' },
-            { id: 27, type: 'bookmark', name: '掘金', url: 'https://juejin.cn', icon: 'https://juejin.cn/favicon.ico' }
+            { id: 26, type: 'bookmark', name: 'CSDN', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' }
         ]
-    },
-    { id: 28, type: 'bookmark', name: '知乎', url: 'https://www.zhihu.com', icon: 'https://www.zhihu.com/favicon.ico' },
-    { id: 29, type: 'bookmark', name: '微博', url: 'https://weibo.com', icon: 'https://weibo.com/favicon.ico' },
-    { id: 30, type: 'bookmark', name: '豆瓣', url: 'https://www.douban.com', icon: 'https://www.douban.com/favicon.ico' }
+    }
 ];
 
+// 获取书签数据
 function getBookmarks() {
     return bookmarks;
 }
 
+// 设置书签数据
 function setBookmarks(newBookmarks) {
     bookmarks = newBookmarks;
 }
 
+// 添加书签
 function addBookmark(name, url, parentFolder = null) {
     try {
         validateBookmark(name, url);
@@ -95,18 +83,22 @@ function addBookmark(name, url, parentFolder = null) {
             }
         }
         
-        if (parentFolder) {
+        if (parentFolder && parentFolder.type === 'folder') {
+            if (!parentFolder.items) {
+                parentFolder.items = [];
+            }
             parentFolder.items.push(newBookmark);
         } else {
             bookmarks.push(newBookmark);
         }
         
-        showToast('添加书签成功');
+        saveBookmarks();
     } catch (error) {
         showToast(error.message, 'error');
     }
 }
 
+// 修改添加文件夹函数，优化处理逻辑
 function addFolder(name, parentFolder = null) {
     try {
         validateFolder(name);
@@ -118,61 +110,140 @@ function addFolder(name, parentFolder = null) {
             items: []
         };
         
-        if (parentFolder) {
+        if (parentFolder && parentFolder.type === 'folder') {
+            // 确保父文件夹有 items 数组
+            if (!parentFolder.items) {
+                parentFolder.items = [];
+            }
+            // 检查是否存在同名文件夹
+            if (parentFolder.items.some(item => item.type === 'folder' && item.name === name.trim())) {
+                throw new Error('文件夹已存在');
+            }
             parentFolder.items.push(newFolder);
         } else {
+            // 检查根目录是否存在同名文件夹
+            if (bookmarks.some(item => item.type === 'folder' && item.name === name.trim())) {
+                throw new Error('文件夹已存在');
+            }
             bookmarks.push(newFolder);
         }
         
-        showToast('添加文件夹成功');
+        saveBookmarks();
+        return true;
     } catch (error) {
         showToast(error.message, 'error');
+        return false;
     }
 }
 
+// 编辑书签或文件夹
 function editItem(item, newName, newUrl) {
-    item.name = newName;
-    if (item.type === 'bookmark') {
-        item.url = newUrl;
-        item.icon = getFaviconUrl(newUrl);
+    try {
+        if (item.type === 'folder') {
+            validateFolder(newName);
+        } else {
+            validateBookmark(newName, newUrl);
+        }
+
+        // 更新项目属性
+        item.name = newName.trim();
+        if (item.type === 'bookmark') {
+            item.url = newUrl;
+            item.icon = getFaviconUrl(newUrl);
+        }
+        
+        // 保存更改
+        saveBookmarks();
+        return true;
+    } catch (error) {
+        showToast(error.message, 'error');
+        throw error;
     }
 }
 
+// 修改删除函数，确保能正确处理嵌套文件夹中的项目
 function deleteItem(item) {
-    const parentFolder = findParentFolder(item);
-    if (parentFolder) {
-        parentFolder.items = parentFolder.items.filter(i => i.id !== item.id);
-    } else {
-        bookmarks = bookmarks.filter(i => i.id !== item.id);
+    if (!item || !item.id) return false;
+    
+    function removeFromArray(array) {
+        const index = array.findIndex(i => i.id === item.id);
+        if (index !== -1) {
+            array.splice(index, 1);
+            return true;
+        }
+        return false;
     }
+    
+    function recursiveDelete(items) {
+        // 先尝试直接从当前层级删除
+        if (removeFromArray(items)) {
+            return true;
+        }
+        
+        // 如果没找到，遍历所有文件夹继续查找
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type === 'folder' && items[i].items) {
+                if (recursiveDelete(items[i].items)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    const result = recursiveDelete(bookmarks);
+    if (result) {
+        saveBookmarks();
+        return true;
+    }
+    return false;
 }
 
-function findParentFolder(item, currentItems = bookmarks) {
-    for (let currentItem of currentItems) {
-        if (currentItem.type === 'folder') {
-            if (currentItem.items.some(i => i.id === item.id)) {
-                return currentItem;
-            }
-            const nestedResult = findParentFolder(item, currentItem.items);
-            if (nestedResult) {
-                return nestedResult;
-            }
+// 查找书签或文件夹的父文件夹
+function findParentFolder(itemId, items = getBookmarks()) {
+    for (let item of items) {
+        if (item.items && item.items.some(child => child.id === itemId)) {
+            return item;
+        }
+        if (item.type === 'folder' && item.items) {
+            const found = findParentFolder(itemId, item.items);
+            if (found) return found;
         }
     }
     return null;
 }
 
+// 添加递归查找文件夹的辅助函数
+function findFolderById(id, items = bookmarks) {
+    for (let item of items) {
+        if (item.type === 'folder' && item.id === id) {
+            return item;
+        }
+        if (item.type === 'folder' && item.items) {
+            const found = findFolderById(id, item.items);
+            if (found) return found;
+        }
+    }
+    return null;
+}
+
+// 检查两个文件夹是否存在嵌套关系
 function isSubfolder(parentFolder, childFolder) {
+    // 如果两个文件夹是同一个，返回 true
     if (parentFolder.id === childFolder.id) return true;
+    // 如果子文件夹不是文件夹类型，返回 false
     if (childFolder.type !== 'folder') return false;
+    // 递归检查子文件夹内的每个项是否是父文件夹
     return childFolder.items.some(item => isSubfolder(parentFolder, item));
 }
 
-
+// 验证书签名称和 URL 是否有效
 function validateBookmark(name, url) {
+    // 检查书签名称是否为空
     if (!name.trim()) {
         throw new Error('书签名称不能为空');
     }
+    // 检查 URL 是否有效
     try {
         new URL(url);
     } catch {
@@ -180,83 +251,58 @@ function validateBookmark(name, url) {
     }
 }
 
+// 验证文件夹名称是否有效
 function validateFolder(name) {
+    // 检查文件夹名称是否为空
     if (!name.trim()) {
         throw new Error('文件夹名称不能为空');
     }
+    // 检查文件夹名称是否过长
     if (name.length > 50) {
         throw new Error('文件夹名称过长');
     }
 }
 
+// 检查书签是否已存在
 function isDuplicateBookmark(newBookmark, container = bookmarks) {
+    // 遍历书签容器
     for (const item of container) {
+        // 如果找到相同的书签，返回 true
         if (item.type === 'bookmark' && item.url === newBookmark.url && item.name === newBookmark.name) {
             return true;
         }
+        // 如果当前项是文件夹，递归检查文件夹内的书签
         if (item.type === 'folder' && isDuplicateBookmark(newBookmark, item.items)) {
             return true;
         }
     }
+    return false; // 如果未找到相同的书签，返回 false
+}
+
+// 手动保存书签
+function saveBookmarks() {
+    // 空函数，不再保存到localStorage
+}
+
+// 从 localStorage 加载书签
+function loadBookmarks() {
+    // 使用默认的书签数据，不从localStorage加载
+}
+
+// 备份书签
+function backupBookmarks() {
+    // 空函数，不再备份到localStorage
+}
+
+// 恢复书签
+function restoreBookmarks() {
+    // 空函数，不再从localStorage恢复
     return false;
 }
 
-const debouncedSaveBookmarks = debounce(() => {
-    try {
-        localStorage.setItem('bookmarks', JSON.stringify(bookmarks));
-    } catch (error) {
-        console.error('Save error:', error);
-        showToast('保存失败，请检查存储空间', 'error');
-    }
-}, 1000);
-
-function saveBookmarks() {
-    debouncedSaveBookmarks();
-}
-
-function loadBookmarks() {
-    const saved = localStorage.getItem('bookmarks');
-    if (saved) {
-        bookmarks = JSON.parse(saved);
-    }
-}
-
-function backupBookmarks() {
-    try {
-        const backup = {
-            timestamp: Date.now(),
-            data: bookmarks
-        };
-        localStorage.setItem('bookmarks_backup', JSON.stringify(backup));
-        showToast('书签已备份');
-    } catch (error) {
-        console.error('Backup error:', error);
-        showToast('备份失败', 'error');
-    }
-}
-
-function restoreBookmarks() {
-    try {
-        const backup = localStorage.getItem('bookmarks_backup');
-        if (backup) {
-            const { timestamp, data } = JSON.parse(backup);
-            if (confirm(`是否恢复${new Date(timestamp).toLocaleString()}的备份？`)) {
-                bookmarks = data;
-                showToast('书签已恢复');
-                return true;
-            }
-        } else {
-            showToast('没有可用的备份', 'error');
-        }
-        return false;
-    } catch (error) {
-        console.error('Restore error:', error);
-        showToast('恢复失败', 'error');
-        return false;
-    }
-}
-
+// 验证文件夹移动是否合法
 function validateFolderMove(sourceFolder, targetFolder) {
+    // 获取文件夹的深度
     function getFolderDepth(folder) {
         let depth = 0;
         let current = folder;
@@ -267,13 +313,17 @@ function validateFolderMove(sourceFolder, targetFolder) {
         return depth;
     }
     
+    // 定义最大嵌套深度
     const MAX_DEPTH = 5;
+    // 获取目标文件夹的深度
     const currentDepth = getFolderDepth(targetFolder);
     
+    // 检查是否超过最大嵌套深度
     if (currentDepth >= MAX_DEPTH) {
         throw new Error('文件夹嵌套层级过深');
     }
     
+    // 检查是否将文件夹移动到其子文件夹中
     if (isSubfolder(sourceFolder, targetFolder)) {
         throw new Error('不能将文件夹移动到其子文件夹中');
     }
@@ -281,10 +331,12 @@ function validateFolderMove(sourceFolder, targetFolder) {
     return true;
 }
 
+// 从父文件夹中移除指定 ID 的书签或文件夹
 export function removeFromParent(id) {
     const bookmarks = getBookmarks();
     let removed = false;
     
+    // 定义递归函数，查找并移除指定 ID 的书签或文件夹
     function removeItem(items) {
         const index = items.findIndex(item => item.id === id);
         if (index !== -1) {
@@ -305,6 +357,7 @@ export function removeFromParent(id) {
     return removed;
 }
 
+// 导出相关函数，供其他模块使用
 export { 
     getBookmarks, 
     setBookmarks, 
