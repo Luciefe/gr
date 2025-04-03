@@ -6,6 +6,8 @@ import { getFaviconUrl, showToast, debounce } from './utils.js';
 
 function renderBookmarks(container = document.getElementById('bookmarkBar'), items = getBookmarks(), level = 0) {
     container.innerHTML = '';
+    // 添加新的类名以区分根目录和子文件夹内容
+    container.classList.toggle('subfolder-content', level > 0);
     items.forEach(item => {
         if (item.type === 'folder') {
             renderFolderItem(item, container, level);
@@ -98,6 +100,11 @@ function createFolderContent(folderElem, folder, level) {
     const content = document.createElement('div');
     content.className = 'folder-content';
     content.dataset.level = level;
+    
+    // 为子文件夹容器添加特殊样式
+    if (level > 0) {
+        content.classList.add('subfolder-content');
+    }
     
     const folderRect = folderElem.getBoundingClientRect();
     content.style.left = `${folderRect.left}px`;
@@ -630,6 +637,47 @@ function closeAllModals() {
         modal.style.display = 'none';
     });
 }
+
+// 添加子文件夹布局的样式
+const subfolderStyle = document.createElement('style');
+subfolderStyle.textContent = `
+    .subfolder-content {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 8px;
+        padding: 8px;
+        white-space: nowrap;
+        overflow-x: auto;
+        max-width: 500px; /* 这里控制最大宽度 */
+        min-width: 200px; /* 这里控制最小宽度 */
+    }
+    
+    .subfolder-content::-webkit-scrollbar {
+        height: 6px;
+    }
+    
+    .subfolder-content::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 3px;
+    }
+    
+    .subfolder-content::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
+    }
+    
+    .subfolder-content::-webkit-scrollbar-thumb:hover {
+        background: rgba(0, 0, 0, 0.3);
+    }
+    
+    .subfolder-content .bookmark-item,
+    .subfolder-content .folder-item {
+        flex-shrink: 0;
+    }
+`;
+document.head.appendChild(subfolderStyle);
 
 export { 
     renderBookmarks, 
