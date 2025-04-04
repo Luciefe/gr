@@ -38,18 +38,52 @@ function renderFolderItem(folder, container, level) {
     container.appendChild(folderElem);
 }
 
-// onerror="this.onerror=null; this.src='${getFaviconUrl(item.url)}';">
-
-
 function renderBookmarkItem(item, container) {
     const bookmarkElem = document.createElement('div');
     bookmarkElem.className = 'bookmark-item';
+    
+    // 创建一个默认的图标 URL
+    const defaultIcon = 'data:image/svg+xml,' + encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <rect width="16" height="16" fill="#ddd"/>
+            <text x="8" y="12" font-size="10" fill="#666" text-anchor="middle" font-family="Arial">
+                ${item.name.charAt(0).toUpperCase()}
+            </text>
+        </svg>
+    `);
+
+    // 设置初始内容
     bookmarkElem.innerHTML = `
-        <img src="${item.icon}" 
+        <img src="${defaultIcon}" 
              alt="${item.name}" 
-             onerror="this.onerror=null; this.src='';">
+             width="16"
+             height="16"
+             style="min-width: 16px; vertical-align: middle;">
         <span>${item.name}</span>
     `;
+
+    const img = bookmarkElem.querySelector('img');
+
+    // 尝试加载网站图标
+    if (item.icon && item.icon !== defaultIcon) {
+        const tempImage = new Image();
+        const timeoutId = setTimeout(() => {
+            tempImage.src = ''; // 取消加载
+            img.src = defaultIcon; // 使用默认图标
+        }, 2000); // 2秒超时
+
+        tempImage.onload = () => {
+            clearTimeout(timeoutId);
+            img.src = item.icon;
+        };
+
+        tempImage.onerror = () => {
+            clearTimeout(timeoutId);
+            img.src = defaultIcon;
+        };
+
+        tempImage.src = item.icon;
+    }
     
     bookmarkElem.dataset.id = item.id;
     addDragListeners(bookmarkElem, item);
