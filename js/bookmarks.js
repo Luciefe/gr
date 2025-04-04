@@ -4,53 +4,39 @@ import { showToast, getFaviconUrl, debounce } from './utils.js';
 // 定义一个 bookmarks 数组，存储书签数据，包含多个文件夹和书签
 let bookmarks = [
     {
-        id: 1,
-        type: 'folder',
-        name: '常用网站',
-        items: [
-            { id: 2, type: 'bookmark', name: '百度', url: 'https://www.baidu.com', icon: 'https://www.baidu.com/favicon.ico' },
-            { id: 3, type: 'bookmark', name: '淘宝', url: 'https://www.taobao.com', icon: 'https://www.taobao.com/favicon.ico' },
-            { id: 4, type: 'bookmark', name: '京东', url: 'https://www.jd.com', icon: 'https://www.jd.com/favicon.ico' },
-            { id: 5, type: 'bookmark', name: '哔哩哔哩', url: 'https://www.bilibili.com', icon: 'https://www.bilibili.com/favicon.ico' }
-        ]
+        "id": 1,
+        "type": "bookmark",
+        "name": "百度",
+        "url": "https://www.baidu.com",
+        "icon": "https://www.baidu.com/favicon.ico"
     },
     {
-        id: 6,
-        type: 'folder',
-        name: '新闻资讯',
-        items: [
-            { id: 7, type: 'bookmark', name: '腾讯新闻', url: 'https://news.qq.com', icon: 'https://news.qq.com/favicon.ico' },
-            { id: 8, type: 'bookmark', name: '新浪新闻', url: 'https://news.sina.com.cn', icon: 'https://news.sina.com.cn/favicon.ico' },
-            { id: 9, type: 'bookmark', name: '网易新闻', url: 'https://news.163.com', icon: 'https://news.163.com/favicon.ico' }
-        ]
+        "id": 2,
+        "type": "bookmark",
+        "name": "谷歌",
+        "url": "https://www.google.com",
+        "icon": "https://www.google.com/favicon.ico"
     },
     {
-        id: 10,
-        type: 'folder',
-        name: '视频娱乐',
-        items: [
-            { id: 11, type: 'bookmark', name: '优酷', url: 'https://www.youku.com', icon: 'https://www.youku.com/favicon.ico' },
-            { id: 12, type: 'bookmark', name: '腾讯视频', url: 'https://v.qq.com', icon: 'https://v.qq.com/favicon.ico' },
-            { id: 13, type: 'bookmark', name: '爱奇艺', url: 'https://www.iqiyi.com', icon: 'https://www.iqiyi.com/favicon.ico' }
-        ]
+        "id": 3,
+        "type": "bookmark",
+        "name": "菜鸟教程",
+        "url": "https://www.runoob.com",
+        "icon": "https://www.runoob.com/favicon.ico"
     },
     {
-        id: 18,
-        type: 'folder',
-        name: '工具网站',
-        items: [
-            { id: 19, type: 'bookmark', name: '有道翻译', url: 'https://fanyi.youdao.com', icon: 'https://fanyi.youdao.com/favicon.ico' },
-            { id: 20, type: 'bookmark', name: '百度地图', url: 'https://map.baidu.com', icon: 'https://map.baidu.com/favicon.ico' }
-        ]
+        "id": 4,
+        "type": "bookmark",
+        "name": "GitHub",
+        "url": "https://github.com",
+        "icon": "https://github.com/favicon.ico"
     },
     {
-        id: 23,
-        type: 'folder',
-        name: '学习资源',
-        items: [
-            { id: 25, type: 'bookmark', name: '菜鸟教程', url: 'https://www.runoob.com', icon: 'https://www.runoob.com/favicon.ico' },
-            { id: 26, type: 'bookmark', name: 'CSDN1', url: 'https://www.csdn.net', icon: 'https://www.csdn.net/favicon.ico' }
-        ]
+        "id": 5,
+        "type": "bookmark",
+        "name": "Cloudflare",
+        "url": "https://www.cloudflare.com",
+        "icon": "https://www.cloudflare.com/favicon.ico"
     }
 ];
 
